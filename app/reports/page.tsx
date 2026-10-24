@@ -11,6 +11,7 @@ import { ThemeToggle } from '@/components/custom/theme-toggle';
 import { Footer } from '@/components/custom/footer';
 import { useAppTranslations } from '@/components/custom/i18n-provider';
 import Link from 'next/link';
+import { Sparkles } from 'lucide-react';
 import { PositionsTable } from '@/components/custom/positions-table';
 
 const DIGIT_CONTRACT_TYPES = [
@@ -73,12 +74,33 @@ export default function ReportsPage() {
       />
 
       <div className="flex-1 w-full max-w-7xl mx-auto px-3 py-4 sm:px-4 sm:py-6 pb-14">
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4">
-          <span className="text-base leading-none">←</span>
-          <span>
-            <Localize i18n_default_text="Back" />
-          </span>
-        </Link>
+        <div className="flex items-center justify-between gap-3 mb-6">
+          <div className="inline-flex items-center p-1 rounded-xl bg-muted/80 border border-border shadow-xs">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-background/60 transition-all"
+            >
+              <span><Localize i18n_default_text="Trade" /></span>
+            </Link>
+            <Link
+              href="/scanner"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-background/60 transition-all"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span><Localize i18n_default_text="Digit Scanner" /></span>
+            </Link>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-lg bg-background text-foreground shadow-sm">
+              <span><Localize i18n_default_text="Positions & Reports" /></span>
+            </span>
+          </div>
+
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+            <span className="text-base leading-none">←</span>
+            <span>
+              <Localize i18n_default_text="Back to trading" />
+            </span>
+          </Link>
+        </div>
         <PositionsTable
           openPositions={trading.openPositions.filter(p =>
             (DIGIT_CONTRACT_TYPES as readonly string[]).includes(p.contract_type)

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Ban } from 'lucide-react';
+import { Ban, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { Localize } from '@deriv-com/translations';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -262,9 +262,10 @@ export function DigitsView({
             {!editMode && (
               <Link
                 href="/scanner"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-md"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-2.5 py-1.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all shrink-0"
               >
-                <Localize i18n_default_text="Scanner" />
+                <Sparkles className="h-3.5 w-3.5" />
+                <span><Localize i18n_default_text="Scanner" /></span>
               </Link>
             )}
             <ThemeToggle />
@@ -362,6 +363,37 @@ export function DigitsView({
         </div>
       ) : (
         headerEl
+      )}
+
+      {/* Top navigation tabs: Trade vs Scanner vs Reports */}
+      {!editMode && (
+        <div className="w-full max-w-5xl mx-auto px-3 sm:px-4 pt-3 pb-1 flex items-center justify-between shrink-0">
+          <div className="inline-flex items-center p-1 rounded-xl bg-muted/80 border border-border shadow-xs">
+            <span className="px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-lg bg-background text-foreground shadow-sm">
+              <Localize i18n_default_text="Trade" />
+            </span>
+            <Link
+              href="/scanner"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-background/60 transition-all"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span><Localize i18n_default_text="Digit Scanner" /></span>
+            </Link>
+            <Link
+              href="/reports"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-background/60 transition-all"
+            >
+              <span><Localize i18n_default_text="Reports" /></span>
+            </Link>
+          </div>
+          <Link
+            href="/scanner"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            <span><Localize i18n_default_text="Scan markets for patterns →" /></span>
+          </Link>
+        </div>
       )}
 
       {appConfig ? (
