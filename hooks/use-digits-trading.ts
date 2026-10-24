@@ -91,7 +91,10 @@ export function useDigitsTrading({ ws, isConnected, isExhausted, isAuthenticated
   const [contractMode, setContractMode] = useState<ContractMode>('DIGITMATCH');
   const [selectedDigit, setSelectedDigit] = useState<number>(5);
   const [stake, setStake] = useState<string>('10');
-  const [duration, setDuration] = useState<number>(5);
+  // Start at 1 tick so the form opens at the lowest tick count instead of the
+  // market's default 5-tick layout. The contract response can still enforce a
+  // higher minimum for some symbols, but the UI should not force 5 by default.
+  const [duration, setDuration] = useState<number>(1);
 
   const pendingSymbolRef = useRef<string | null>(null);
 
