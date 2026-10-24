@@ -25,7 +25,7 @@ export default function ScannerPage() {
   );
 
   return (
-    <main className="flex flex-col bg-background min-h-dvh">
+    <main className="flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground">
       <Header
         authState={authState}
         accounts={accounts}
@@ -38,43 +38,47 @@ export default function ScannerPage() {
         actions={<ThemeToggle />}
       />
 
-      <div className="flex-1 w-full max-w-7xl mx-auto px-3 py-4 sm:px-4 sm:py-6 pb-16">
-        <div className="flex items-center justify-between gap-3 mb-6">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-primary/10 text-primary">
-              <Sparkles className="h-5 w-5" />
+      <div className="w-full flex-1">
+        <div className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-4 sm:py-6">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-2.5 min-w-0">
+              <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                  <Localize i18n_default_text="Matches Digit Scanner" />
+                </h1>
+                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                  <Localize i18n_default_text="Scan volatility markets for Matches signals & configure the buy page" />
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight text-foreground">
-                <Localize i18n_default_text="Matches Digit Scanner" />
-              </h1>
-              <p className="text-xs text-muted-foreground">
-                <Localize i18n_default_text="Scan volatility markets for Matches signals & configure the buy page" />
-              </p>
-            </div>
+
+            <Link
+              href="/"
+              className="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:w-auto"
+            >
+              <span className="text-base leading-none">←</span>
+              <span>
+                <Localize i18n_default_text="Back to trading" />
+              </span>
+            </Link>
           </div>
 
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <span className="text-base leading-none">←</span>
-            <span>
-              <Localize i18n_default_text="Back to trading" />
-            </span>
-          </Link>
+          <DigitScannerPanel
+            ws={ws}
+            isConnected={isConnected}
+            symbols={symbols}
+            symbolsLoading={symbolsLoading}
+          />
         </div>
-
-        <DigitScannerPanel
-          ws={ws}
-          isConnected={isConnected}
-          symbols={symbols}
-          symbolsLoading={symbolsLoading}
-        />
       </div>
 
-      <div className="py-3 text-center bg-background/80 backdrop-blur-sm border-t border-border mt-auto">
-        <Footer />
+      <div className="border-t border-border bg-background/80 backdrop-blur-sm">
+        <div className="mx-auto w-full max-w-7xl px-3 py-3 sm:px-4">
+          <Footer />
+        </div>
       </div>
     </main>
   );
