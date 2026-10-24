@@ -89,20 +89,17 @@ export default function ViewportScaler({ children }: { children: React.ReactNode
 
   // Mobile with a computed scale.
   //
-  // Two-layer structure:
-  //   • Outer clip wrapper — fixed 100vw × 100dvh, overflow:hidden.
-  //     Acts as the viewport "frame" and hides the oversized inner div
-  //     before the CSS transform is applied.
-  //   • Inner measured div (containerRef) — intentionally wider than the
-  //     viewport (width = 100vw / scale) so that after scale(n) it is
-  //     exactly 100vw.  transformOrigin:top-left keeps the top-left corner
-  //     anchored while the content scales down to fit the viewport height.
+  // Allow vertical scrolling while still using the scale-down viewport shim.
+  // The outer frame remains fixed to the viewport height, but the content can
+  // grow taller than the frame and scroll naturally instead of being clipped.
   return (
     <div
       style={{
         width: '100vw',
         height: '100dvh',
-        overflow: 'hidden',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch',
         opacity: isReady ? 1 : 0,
         transition: 'opacity 0.15s ease',
       }}
