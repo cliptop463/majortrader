@@ -3,8 +3,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { FocusScope } from '@radix-ui/react-focus-scope';
-import Link from 'next/link';
-import { FileText, LogOut, Menu, Sparkles, TrendingUp, X } from 'lucide-react';
+import { LogOut, Menu, X } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Localize } from '@deriv-com/translations';
 import { Button } from '@/components/ui/button';
@@ -316,9 +315,9 @@ export function Header({
           </h1>
         )}
       </div>
-      <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-        {actions && <div className="flex items-center gap-2 shrink-0">{actions}</div>}
+      <div className="flex min-w-0 items-center gap-3">
         <div className="hidden lg:flex items-center gap-3 shrink-0">
+          {actions}
           <LanguageSwitcher />
         </div>
         {isAuthenticated && activeAccount && (
@@ -384,8 +383,8 @@ export function Header({
           <Button
             variant="ghost"
             size="icon"
-            className="shrink-0"
-            aria-label={localize('Menu')}
+            className="lg:hidden shrink-0"
+            aria-label={localize('Your preferences')}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
@@ -396,130 +395,46 @@ export function Header({
 
   return (
     <DialogPrimitive.Root modal={false} open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+      {/* modal=false keeps the header X and portaled popovers interactive */}
       {headerBar}
+      {/* Portal to body: Content is position:fixed z-[100], but a class z-index is
+          trapped in the edit-mode `sticky z-50` wrapper, so chart FixedZones at
+          z-[60] still steal Appearance/Language clicks ("Gráfico · no editable"). */}
       <DialogPrimitive.Portal>
       <FocusScope loop trapped={mobileMenuOpen}>
       <DialogPrimitive.Content
         aria-modal="true"
-        className="fixed inset-y-0 right-0 z-[100] flex flex-col w-full max-w-sm bg-background border-l border-border shadow-2xl outline-none"
+        className="fixed inset-x-0 bottom-0 z-[100] flex flex-col bg-background lg:hidden outline-none"
+        style={{ top: menuTop }}
         onPointerDownOutside={preventDismissFromPopoverOrHeader}
         onInteractOutside={preventDismissFromPopoverOrHeader}
         onFocusOutside={preventDismissFromPopoverOrHeader}
       >
-        {/* Drawer Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-card">
-          <div className="flex items-center gap-2.5">
-            {!logoSrc || logoError ? (
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                {logoLetter}
-              </div>
-            ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoSrc} alt="Logo" className="h-7 w-auto object-contain" />
-            )}
-            <div>
-              <p className="font-bold text-foreground text-sm leading-tight">{resolvedName}</p>
-              <p className="text-[11px] text-muted-foreground"><Localize i18n_default_text="Digits Trading & Scanner" /></p>
-            </div>
+        <div className="flex-1 overflow-y-auto px-6 pt-4 space-y-6">
+          <div className="space-y-2 text-left">
+            <DialogPrimitive.Title className="text-lg font-semibold leading-none tracking-tight">
+              <Localize i18n_default_text="Your preferences" />
+            </DialogPrimitive.Title>
+            <DialogPrimitive.Description className="text-sm text-muted-foreground">
+              <Localize i18n_default_text="A space that feels like you." />
+            </DialogPrimitive.Description>
           </div>
-          <DialogPrimitive.Close asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogPrimitive.Close>
-        </div>
-
-        {/* Scrollable menu content */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6">
-          {/* Navigation Section */}
-          <div className="space-y-2.5 text-left">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              <Localize i18n_default_text="Features & Routes" />
+          <AppearancePicker />
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-foreground">
+              <Localize i18n_default_text="Language" />
             </p>
-            <div className="flex flex-col gap-2">
-              <Link
-                href="/"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card hover:bg-muted/70 transition-colors shadow-2xs group"
-              >
-                <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <TrendingUp className="h-4 w-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold text-sm text-foreground"><Localize i18n_default_text="Trade Console" /></p>
-                    <span className="text-xs text-muted-foreground group-hover:translate-x-0.5 transition-transform">→</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground truncate"><Localize i18n_default_text="Live digits trading & stats" /></p>
-                </div>
-              </Link>
-
-              <Link
-                href="/scanner"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 p-3 rounded-xl border border-primary/40 bg-primary/5 hover:bg-primary/10 transition-colors shadow-2xs group"
-              >
-                <div className="p-2 rounded-lg bg-primary text-primary-foreground">
-                  <Sparkles className="h-4 w-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <p className="font-semibold text-sm text-foreground"><Localize i18n_default_text="Digit Scanner" /></p>
-                      <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-primary text-primary-foreground uppercase tracking-wider">New</span>
-                    </div>
-                    <span className="text-xs text-primary font-bold group-hover:translate-x-0.5 transition-transform">→</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground truncate"><Localize i18n_default_text="8 heuristic statistical strategies" /></p>
-                </div>
-              </Link>
-
-              <Link
-                href="/reports"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card hover:bg-muted/70 transition-colors shadow-2xs group"
-              >
-                <div className="p-2 rounded-lg bg-muted text-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <FileText className="h-4 w-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold text-sm text-foreground"><Localize i18n_default_text="Positions & Reports" /></p>
-                    <span className="text-xs text-muted-foreground group-hover:translate-x-0.5 transition-transform">→</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground truncate"><Localize i18n_default_text="Open contracts & trade history" /></p>
-                </div>
-              </Link>
-            </div>
-          </div>
-
-          {/* Preferences Section */}
-          <div className="space-y-4 pt-4 border-t border-border">
-            <div className="space-y-1.5 text-left">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                <Localize i18n_default_text="Appearance" />
-              </p>
-              <AppearancePicker />
-            </div>
-
-            <div className="space-y-1.5 text-left">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                <Localize i18n_default_text="Language" />
-              </p>
-              <LanguageSwitcher className="w-full h-10 font-semibold" />
-            </div>
+            <LanguageSwitcher className="w-full h-11 font-semibold" />
           </div>
         </div>
-
-        {/* Footer / Account Auth */}
-        <div className="p-5 border-t border-border bg-muted/20">
+        <div className="mt-auto px-6 pb-8 pt-4 flex flex-col gap-3 border-t border-border">
           <MobileAuthButtons
             isAuthenticated={isAuthenticated}
             isAuthenticating={isAuthenticating}
             onLogin={onLogin}
             onLogout={() => {
-              onLogout();
               setMobileMenuOpen(false);
+              onLogout();
             }}
             onSignUp={onSignUp}
           />
