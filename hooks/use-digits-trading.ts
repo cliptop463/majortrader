@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   useProposal,
   useBuy,
@@ -17,6 +17,8 @@ import { useBaseTrading } from '@/hooks/use-base-trading';
 import type { UseBaseTradingParams } from '@/hooks/use-base-trading';
 import { computeDigitStats, getLastDigit } from '../lib/digit-stats';
 import type { ContractMode, TradeType, DigitStats, OpenPosition, ClosedPosition } from '../lib/types';
+import { parseTradeHandoff, HANDOFF_PARAMS } from '@/lib/digit-scanner/handoff';
+import { toast } from 'sonner';
 
 const CONTRACT_TYPES = ['DIGITMATCH', 'DIGITDIFF', 'DIGITOVER', 'DIGITUNDER', 'DIGITEVEN', 'DIGITODD'];
 
@@ -90,6 +92,43 @@ export function useDigitsTrading({ ws, isConnected, isExhausted, isAuthenticated
   const [selectedDigit, setSelectedDigit] = useState<number>(5);
   const [stake, setStake] = useState<string>('10');
   const [duration, setDuration] = useState<number>(5);
+
+  const pendingSymbolRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handoff = parseTradeHandoff(window.location.search);
+    if (!handoff) return;
+
+    setTradeTypeRaw('matches-differs');
+    setContractMode(handoff.mode);
+    setSelectedDigit(handoff.digit);
+    pendingSymbolRef.current = handoff.symbol;
+
+    const modeLabel = handoff.mode === 'DIGITMATCH' ? 'MATCHES' : 'DIFFERS';
+    toast.success(`Configured on Buy Page: ${handoff.symbol} ${modeLabel} ${handoff.digit}`, {
+      description: 'Market, contract mode, and matches digit are pre-filled. Press Buy to enter.',
+      duration: 5000,
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    for (const key of HANDOFF_PARAMS) {
+      params.delete(key);
+    }
+    const query = params.toString();
+    const next = `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`;
+    window.history.replaceState(null, '', next);
+  }, []);
+
+  useEffect(() => {
+    const symbol = pendingSymbolRef.current;
+    if (symbol && !isLoading && symbols.length > 0) {
+      pendingSymbolRef.current = null;
+      if (activeSymbol?.underlying_symbol !== symbol) {
+        selectSymbol(symbol);
+      }
+    }
+  }, [isLoading, symbols, activeSymbol, selectSymbol]);
 
   // Reset contract mode to the first option of the selected trade type
   const setTradeType = useCallback((type: TradeType) => {

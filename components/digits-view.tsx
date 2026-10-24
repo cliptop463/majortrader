@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Ban } from 'lucide-react';
+import Link from 'next/link';
+import { Ban, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { Localize } from '@deriv-com/translations';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -256,7 +257,20 @@ export function DigitsView({
         logoSrc={logoSrc}
         appName={appName}
         showAppName={showAppName}
-        actions={<ThemeToggle />}
+        actions={
+          <div className="flex items-center gap-2">
+            {!editMode && (
+              <Link
+                href="/scanner"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-2.5 py-1.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all shrink-0"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                <span><Localize i18n_default_text="Scanner" /></span>
+              </Link>
+            )}
+            <ThemeToggle />
+          </div>
+        }
       />
     );
   }, [
