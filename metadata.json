@@ -1,0 +1,8 @@
+{
+  "name": "Major Trader",
+  "description": "White-label Deriv digits trading application with live tick charts, digit statistics, and instant trade execution.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
