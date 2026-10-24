@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { Ban } from 'lucide-react';
 import { toast } from 'sonner';
 import { Localize } from '@deriv-com/translations';
@@ -256,7 +257,19 @@ export function DigitsView({
         logoSrc={logoSrc}
         appName={appName}
         showAppName={showAppName}
-        actions={<ThemeToggle />}
+        actions={
+          <div className="flex items-center gap-2">
+            {!editMode && (
+              <Link
+                href="/scanner"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-md"
+              >
+                <Localize i18n_default_text="Scanner" />
+              </Link>
+            )}
+            <ThemeToggle />
+          </div>
+        }
       />
     );
   }, [
