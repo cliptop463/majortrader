@@ -25,7 +25,7 @@ export default function ScannerPage() {
   );
 
   return (
-    <main className="flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground">
+    <main className="flex min-h-dvh flex-col bg-background text-foreground max-lg:h-dvh max-lg:overflow-y-auto overflow-y-auto">
       <Header
         authState={authState}
         accounts={accounts}
@@ -39,7 +39,7 @@ export default function ScannerPage() {
       />
 
       <div className="w-full flex-1">
-        <div className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-4 sm:py-6">
+        <div className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-4 sm:py-6 pb-16">
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-2.5 min-w-0">
               <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
