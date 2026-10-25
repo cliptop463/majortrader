@@ -5,12 +5,42 @@ import { Card } from '@/components/ui/card';
 import { Canvas } from './Canvas';
 import { PropertyPanel } from './PropertyPanel';
 import { Toolbox } from './Toolbox';
-import type { Strategy } from '@/lib/strategy/types';
+import type { Strategy, StrategyConditionType } from '@/lib/strategy/types';
 
 interface BuilderLayoutProps {
   strategy: Strategy;
   onStrategyChange: (nextStrategy: Strategy) => void;
 }
+
+const normalizeConditionType = (value: string): StrategyConditionType => {
+  const normalized = value.trim();
+
+  const typeMap: Record<string, StrategyConditionType> = {
+    IF: 'IF',
+    AND: 'AND',
+    OR: 'OR',
+    BUY: 'BUY',
+    SELL: 'SELL',
+    WAIT: 'WAIT',
+    'Digit Equals': 'Digit Equals',
+    'Digit Over': 'Digit Over',
+    'Digit Under': 'Digit Under',
+    Even: 'Even',
+    Odd: 'Odd',
+    'Trend Up': 'Trend Up',
+    'Trend Down': 'Trend Down',
+    Frequency: 'Frequency',
+    Martingale: 'Martingale',
+    'Stop Loss': 'Stop Loss',
+    'Take Profit': 'Take Profit',
+    'Scanner Trigger': 'Scanner Trigger',
+    'Signal Trigger': 'Signal Trigger',
+    'Max Trades': 'Max Trades',
+    Cooldown: 'Cooldown',
+  };
+
+  return typeMap[normalized] ?? 'IF';
+};
 
 export function BuilderLayout({ strategy, onStrategyChange }: BuilderLayoutProps) {
   const updateCondition = (conditionId: string, updates: Partial<Strategy['conditions'][number]>) => {
@@ -23,12 +53,14 @@ export function BuilderLayout({ strategy, onStrategyChange }: BuilderLayoutProps
   };
 
   const handleDropBlock = (blockType: string) => {
-    const newCondition = {
-      id: `${blockType.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
-      type: blockType,
-      label: blockType,
-      description: `${blockType} condition block`,
+    const conditionType = normalizeConditionType(blockType);
+    const newCondition: Strategy['conditions'][number] = {
+      id: `${conditionType.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
+      type: conditionType,
+      label: conditionType,
+      description: `${conditionType} condition block`,
     };
+
     onStrategyChange({
       ...strategy,
       conditions: [...strategy.conditions, newCondition],
@@ -67,4 +99,3 @@ export function BuilderLayout({ strategy, onStrategyChange }: BuilderLayoutProps
     </div>
   );
 }
-
