@@ -64,3 +64,71 @@ export interface StrategyTemplate extends Strategy {
   kind: 'starter';
 }
 
+/**
+ * Validated scanner signal received from digit consensus analysis.
+ */
+export interface ScannerSignal {
+  id: string;
+  symbol: string;
+  contractType: 'DIGITMATCH';
+  digit: number;
+  direction: 'MATCHES';
+  heuristicScore: number;
+  agree: number;
+  eligible: number;
+  timestamp: number;
+}
+
+/**
+ * Session tracking for risk management and performance stats.
+ */
+export interface RiskSessionState {
+  totalTrades: number;
+  wins: number;
+  losses: number;
+  netProfit: number;
+  hasOpenContract: boolean;
+  lastTradeEndedAt: number | null;
+  cooldownUntil: number | null;
+}
+
+export type RuntimeStatus =
+  | 'idle'
+  | 'running'
+  | 'paused'
+  | 'stopped'
+  | 'limit_reached';
+
+export type ExecutionPhase =
+  | 'idle'
+  | 'scanning'
+  | 'signal_detected'
+  | 'proposing'
+  | 'purchasing'
+  | 'open_contract'
+  | 'settling'
+  | 'cooldown'
+  | 'halted';
+
+export interface TradeRecord {
+  id: string;
+  timestamp: number;
+  symbol: string;
+  contractType: 'DIGITMATCH';
+  digit: number;
+  stake: number;
+  payout: number;
+  profit: number;
+  status: 'won' | 'lost' | 'open' | 'failed';
+  contractId?: number;
+  proposalId?: string;
+  heuristicScore: number;
+  message?: string;
+}
+
+export interface RuntimeEventLog {
+  id: string;
+  timestamp: number;
+  level: 'info' | 'success' | 'warn' | 'error';
+  message: string;
+}

@@ -2,6 +2,32 @@ import type { Strategy } from './types';
 
 export const STRATEGY_TEMPLATES: Strategy[] = [
   {
+    id: 'template-matches-consensus',
+    name: 'Matches Digit Consensus',
+    market: 'R_100',
+    contractType: 'DIGITMATCH',
+    trade: { stake: 1, duration: 1, durationUnit: 'ticks' },
+    conditions: [
+      { id: 'template-m1', type: 'Scanner Trigger', label: 'Scanner Trigger', description: 'Consensus MATCHES signal on continuous volatility index' },
+      { id: 'template-m2', type: 'IF', label: 'IF', description: 'Statistical consensus heuristic >= 50' },
+      { id: 'template-m3', type: 'BUY', label: 'BUY', description: 'Place DIGITMATCH order with fixed stake' },
+    ],
+    risk: {
+      stopLoss: 5,
+      takeProfit: 15,
+      maxTrades: 5,
+      dailyLossLimit: 20,
+      cooldown: 3,
+      martingale: false,
+      antiMartingale: false,
+      fixedStake: true,
+    },
+    metadata: {
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  },
+  {
     id: 'template-digit-differ',
     name: 'Digit Differ',
     market: 'VOL100IDX',
@@ -90,4 +116,3 @@ export function getStrategyTemplates(): Strategy[] {
     },
   }));
 }
-
